@@ -1,0 +1,138 @@
+[
+  {
+    "id": "sample_01",
+    "type": "clean",
+    "text": "Aura Robotics designs automated robotic inspection systems engineered to improve operational precision and safety in enterprise manufacturing environments.",
+    "expected_violations": 0
+  },
+  {
+    "id": "sample_02",
+    "type": "clean",
+    "text": "Our engineering teams focus on reducing inspection cycle times while maintaining full compliance with ISO 9001 quality standards.",
+    "expected_violations": 0
+  },
+  {
+    "id": "sample_03",
+    "type": "clean",
+    "text": "Enterprise partners deploy Aura FleetOS across multi-region facilities with continuous telemetry and edge monitoring.",
+    "expected_violations": 0
+  },
+  {
+    "id": "sample_04",
+    "type": "clean",
+    "text": "Energy consumption is reduced by 28% compared to traditional hydraulic gantries based on verified field benchmarks.",
+    "expected_violations": 0
+  },
+  {
+    "id": "sample_05",
+    "type": "banned_terms",
+    "text": "Our cheap automation solution helps factories cut overhead without significant upfront capital investment.",
+    "expected_violations": 1,
+    "expected_keywords": ["cheap"]
+  },
+  {
+    "id": "sample_06",
+    "type": "banned_terms",
+    "text": "Why settle for inferior bargain-basement robotics when Aura provides reliable performance?",
+    "expected_violations": 1,
+    "expected_keywords": ["bargain-basement"]
+  },
+  {
+    "id": "sample_07",
+    "type": "terminology",
+    "text": "We provide our enterprise customers with 24/7 dedicated engineering support.",
+    "expected_violations": 1,
+    "expected_keywords": ["customers"]
+  },
+  {
+    "id": "sample_08",
+    "type": "terminology",
+    "text": "The latest AuraOS software patch includes enhanced trajectory planning.",
+    "expected_violations": 1,
+    "expected_keywords": ["AuraOS"]
+  },
+  {
+    "id": "sample_09",
+    "type": "tone_urgency",
+    "text": "Act now before end of quarter to lock in exclusive hardware deployment slots!",
+    "expected_violations": 1,
+    "expected_keywords": ["act now"]
+  },
+  {
+    "id": "sample_10",
+    "type": "tone_urgency",
+    "text": "Hurry! Limited time only opportunity to automate your warehouse operations.",
+    "expected_violations": 2,
+    "expected_keywords": ["hurry", "limited time only"]
+  },
+  {
+    "id": "sample_11",
+    "type": "tone_jargon",
+    "text": "We leverage bleeding-edge synergistic algorithms to orchestrate a true paradigm shift.",
+    "expected_violations": 3,
+    "expected_keywords": ["bleeding-edge", "synergistic", "paradigm shift"]
+  },
+  {
+    "id": "sample_12",
+    "type": "tone_casing",
+    "text": "DEPLOY AUTONOMOUS ROBOTS TODAY AND MAXIMIZE FACILITY OUTPUT IMMEDIATELY",
+    "expected_violations": 1,
+    "expected_keywords": ["DEPLOY AUTONOMOUS ROBOTS"]
+  },
+  {
+    "id": "sample_13",
+    "type": "unsupported_claims",
+    "text": "Aura SentinelBot is the best autonomous robot in the entire world.",
+    "expected_violations": 1,
+    "expected_keywords": ["the best"]
+  },
+  {
+    "id": "sample_14",
+    "type": "unsupported_claims",
+    "text": "We are the #1 robotics provider across every industrial vertical.",
+    "expected_violations": 1,
+    "expected_keywords": ["#1"]
+  },
+  {
+    "id": "sample_15",
+    "type": "unsupported_claims",
+    "text": "Our systems deliver 100% guaranteed zero risk operations on every factory floor.",
+    "expected_violations": 2,
+    "expected_keywords": ["100% guaranteed", "zero risk"]
+  },
+  {
+    "id": "sample_16",
+    "type": "unsupported_claims",
+    "text": "Our vision system is clinically proven to reduce defect rates under all environmental conditions.",
+    "expected_violations": 1,
+    "expected_keywords": ["clinically proven"]
+  },
+  {
+    "id": "sample_17",
+    "type": "legal_disclaimer",
+    "text": "Deploying autonomous inspection robots in human-occupied zones improves throughput.",
+    "expected_violations": 1,
+    "expected_keywords": ["autonomous"]
+  },
+  {
+    "id": "sample_18",
+    "type": "outdated_fact",
+    "text": "Aura was named Visionary in the 2024 Industrial Robotics Market Report.",
+    "expected_violations": 1,
+    "expected_keywords": ["2024 Industrial Robotics Market Report"]
+  },
+  {
+    "id": "sample_19",
+    "type": "confidential_policy",
+    "text": "Enterprise partners receive our internal tier discount margin formula automatically.",
+    "expected_violations": 1,
+    "expected_keywords": ["internal tier discount"]
+  },
+  {
+    "id": "sample_20",
+    "type": "channel_limits",
+    "text": "We build great robots! #AI #Robotics #Tech #Automation #Engineering #Innovation #Future",
+    "expected_violations": 1,
+    "expected_keywords": ["#Automation"]
+  }
+]

@@ -85,7 +85,7 @@ class DeterministicRuleEngine:
 
     SUPERLATIVE_PATTERNS = [
         (r'\b(?:the\s+)?best\b', 'Unsubstantiated superlative "best"'),
-        (r'\b(?:#1|number\s+one|number\s+1|no\.?\s*1)\b', 'Unverified ranking claim'),
+        (r'(?:#1|\b(?:number\s+one|number\s+1|no\.?\s*1)\b)', 'Unverified ranking claim'),
         (r'\b(?:100%\s+guaranteed?|guaranteed\s+results?)\b', 'Absolute guarantee claim'),
         (r'\b(?:clinically\s+proven|scientifically\s+proven)\b', 'Unreferenced medical/scientific proof claim'),
         (r'\b(?:world\'?s?\s+first|industry\s+first)\b', 'Unverified "first" claim'),
@@ -107,11 +107,13 @@ class DeterministicRuleEngine:
             if not getattr(rule, "active", True):
                 continue
 
+            config = getattr(rule, "pattern_config", {}) or {}
             rule_type = getattr(rule, "rule_type", "deterministic")
-            if rule_type != "deterministic":
+            # Evaluate if rule is deterministic OR has actionable pattern config
+            has_patterns = bool(config.get("banned_words") or config.get("terminology_map") or config.get("regex_pattern") or config.get("required_phrases") or config.get("max_length"))
+            if rule_type != "deterministic" and not has_patterns:
                 continue
 
-            config = getattr(rule, "pattern_config", {}) or {}
             rule_id = str(getattr(rule, "id", ""))
             rule_title = getattr(rule, "title", "Rule violation")
             severity: SeverityType = getattr(rule, "severity_default", "medium")
@@ -169,7 +171,9 @@ class DeterministicRuleEngine:
             custom_regex = config.get("regex_pattern")
             if custom_regex:
                 try:
-                    for match in re.finditer(custom_regex, text, re.IGNORECASE):
+                    # Do not ignore case if pattern contains uppercase character ranges or if case_sensitive is True
+                    flags = 0 if ("[A-Z]" in custom_regex or config.get("case_sensitive", False)) else re.IGNORECASE
+                    for match in re.finditer(custom_regex, text, flags):
                         start, end = match.span()
                         excerpt = text[start:end]
                         findings.append({
@@ -292,8 +296,8 @@ class DeterministicRuleEngine:
                         "status": "open",
                     })
 
-        # 3. Check: ALL-CAPS screaming (> 5 words in a row)
-        screaming_pattern = r'\b([A-Z]{3,}(?:\s+[A-Z]{3,}){2,})\b'
+        # 3. Check: ALL-CAPS screaming (consecutive all-caps words)
+        screaming_pattern = r'\b([A-Z]{4,}(?:\s+[A-Z]{4,}){2,})\b'
         for match in re.finditer(screaming_pattern, text):
             start, end = match.span()
             excerpt = text[start:end]
@@ -336,6 +340,49 @@ class DeterministicRuleEngine:
                 "needs_verification": False,
                 "status": "open",
             })
+
+        # 5. Check: Citations of expired or outdated approved facts
+        today = date.today()
+        for fact in approved_facts:
+            valid_until = getattr(fact, "valid_until", None)
+            if valid_until and valid_until < today:
+                statement = getattr(fact, "statement", "")
+                topic = getattr(fact, "topic", "")
+                # Check for distinctive phrases (e.g. report name or multi-word segments)
+                check_candidates = []
+                if topic:
+                    clean_t = re.sub(r'\(.*?\)', '', topic).strip()
+                    if len(clean_t) >= 6:
+                        check_candidates.append(clean_t)
+                words = statement.split()
+                if len(words) >= 4:
+                    for i in range(len(words) - 3):
+                        check_candidates.append(" ".join(words[i:i+4]).strip(".,;:\"'"))
+
+                for cand in check_candidates:
+                    if cand.lower() in text.lower():
+                        match_idx = text.lower().find(cand.lower())
+                        cand_len = len(cand)
+                        # Check if not already flagged in this span
+                        already_flagged = any(f.get("fact_id") == str(getattr(fact, "id", "")) for f in findings)
+                        if not already_flagged:
+                            findings.append({
+                                "category": "claims",
+                                "severity": "high",
+                                "rule_id": None,
+                                "fact_id": str(getattr(fact, "id", "")),
+                                "source": "rule_engine",
+                                "span_start": match_idx,
+                                "span_end": match_idx + cand_len,
+                                "excerpt": text[match_idx:match_idx + cand_len],
+                                "explanation": f'Claim references approved fact "{topic}", but this fact EXPIRED on {valid_until}. Needs verification with updated data.',
+                                "evidence_text": f'Source: {getattr(fact, "source_name", "Fact Database")} (Expired {valid_until})',
+                                "suggested_fix": "Verify with up-to-date metrics or update citation.",
+                                "confidence": "high",
+                                "needs_verification": True,
+                                "status": "open",
+                            })
+                        break
 
         return findings
 
