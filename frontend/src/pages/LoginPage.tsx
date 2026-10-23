@@ -27,9 +27,19 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleQuickSelect = (uEmail: string, uPass: string) => {
+  const handleQuickLogin = async (uEmail: string, uPass: string) => {
     setEmail(uEmail);
     setPassword(uPass);
+    setError(null);
+    setLoading(true);
+    try {
+      await login(uEmail, uPass);
+      navigate('/app');
+    } catch (err: any) {
+      setError(err.message || 'Login failed. Please check credentials.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -104,60 +114,60 @@ export const LoginPage: React.FC = () => {
           {/* Demo Credentials & Quick Switch Buttons */}
           <div className="mt-8 pt-6 border-t border-[#2A2A2A]">
             <span className="block text-[11px] font-mono text-[#A3A3A3] uppercase tracking-wider text-center mb-3">
-              1-Click Demo Accounts (Local Mode)
+              ⚡ Instant 1-Click Demo Accounts
             </span>
 
             <div className="grid grid-cols-2 gap-2 text-xs">
               <button
                 type="button"
-                onClick={() => handleQuickSelect('creator@plumb.brand', 'creator123')}
-                className={`p-2 rounded text-left border transition-all ${
-                  email === 'creator@plumb.brand'
-                    ? 'border-[#BC0202] bg-[#141414] text-[#F5F5F5]'
-                    : 'border-[#2A2A2A] bg-[#0A0A0A] text-[#A3A3A3] hover:border-[#830000]'
-                }`}
+                disabled={loading}
+                onClick={() => handleQuickLogin('creator@plumb.brand', 'creator123')}
+                className="p-2.5 rounded text-left border border-[#2A2A2A] bg-[#0A0A0A] hover:bg-[#141414] hover:border-[#BC0202] text-[#A3A3A3] transition-all cursor-pointer group disabled:opacity-50"
               >
-                <span className="font-bold text-[#F5F5F5] block">Creator (Internal)</span>
-                <span className="text-[10px] text-[#A3A3A3] block font-mono">creator123</span>
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[#F5F5F5] block group-hover:text-[#FF0000] transition-colors">Creator</span>
+                  <span className="text-[10px] text-[#BC0202] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">Login →</span>
+                </div>
+                <span className="text-[10px] text-[#A3A3A3] block font-mono">Senior Copywriter</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => handleQuickSelect('reviewer@plumb.brand', 'reviewer123')}
-                className={`p-2 rounded text-left border transition-all ${
-                  email === 'reviewer@plumb.brand'
-                    ? 'border-[#BC0202] bg-[#141414] text-[#F5F5F5]'
-                    : 'border-[#2A2A2A] bg-[#0A0A0A] text-[#A3A3A3] hover:border-[#830000]'
-                }`}
+                disabled={loading}
+                onClick={() => handleQuickLogin('reviewer@plumb.brand', 'reviewer123')}
+                className="p-2.5 rounded text-left border border-[#2A2A2A] bg-[#0A0A0A] hover:bg-[#141414] hover:border-[#BC0202] text-[#A3A3A3] transition-all cursor-pointer group disabled:opacity-50"
               >
-                <span className="font-bold text-[#F5F5F5] block">Reviewer (Lead)</span>
-                <span className="text-[10px] text-[#A3A3A3] block font-mono">reviewer123</span>
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[#F5F5F5] block group-hover:text-[#FF0000] transition-colors">Reviewer</span>
+                  <span className="text-[10px] text-[#BC0202] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">Login →</span>
+                </div>
+                <span className="text-[10px] text-[#A3A3A3] block font-mono">Compliance Lead</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => handleQuickSelect('admin@plumb.brand', 'admin123')}
-                className={`p-2 rounded text-left border transition-all ${
-                  email === 'admin@plumb.brand'
-                    ? 'border-[#BC0202] bg-[#141414] text-[#F5F5F5]'
-                    : 'border-[#2A2A2A] bg-[#0A0A0A] text-[#A3A3A3] hover:border-[#830000]'
-                }`}
+                disabled={loading}
+                onClick={() => handleQuickLogin('admin@plumb.brand', 'admin123')}
+                className="p-2.5 rounded text-left border border-[#2A2A2A] bg-[#0A0A0A] hover:bg-[#141414] hover:border-[#BC0202] text-[#A3A3A3] transition-all cursor-pointer group disabled:opacity-50"
               >
-                <span className="font-bold text-[#F5F5F5] block">Admin (Brand Mgr)</span>
-                <span className="text-[10px] text-[#A3A3A3] block font-mono">admin123</span>
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[#F5F5F5] block group-hover:text-[#FF0000] transition-colors">Admin</span>
+                  <span className="text-[10px] text-[#BC0202] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">Login →</span>
+                </div>
+                <span className="text-[10px] text-[#A3A3A3] block font-mono">Brand Manager</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => handleQuickSelect('agency@partner.agency', 'agency123')}
-                className={`p-2 rounded text-left border transition-all ${
-                  email === 'agency@partner.agency'
-                    ? 'border-[#BC0202] bg-[#141414] text-[#F5F5F5]'
-                    : 'border-[#2A2A2A] bg-[#0A0A0A] text-[#A3A3A3] hover:border-[#830000]'
-                }`}
+                disabled={loading}
+                onClick={() => handleQuickLogin('agency@partner.agency', 'agency123')}
+                className="p-2.5 rounded text-left border border-[#2A2A2A] bg-[#0A0A0A] hover:bg-[#141414] hover:border-[#BC0202] text-[#A3A3A3] transition-all cursor-pointer group disabled:opacity-50"
               >
-                <span className="font-bold text-[#F5F5F5] block">Agency (External)</span>
-                <span className="text-[10px] text-[#A3A3A3] block font-mono">agency123</span>
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[#F5F5F5] block group-hover:text-[#FF0000] transition-colors">Agency</span>
+                  <span className="text-[10px] text-[#BC0202] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">Login →</span>
+                </div>
+                <span className="text-[10px] text-[#A3A3A3] block font-mono">External Freelancer</span>
               </button>
             </div>
           </div>
