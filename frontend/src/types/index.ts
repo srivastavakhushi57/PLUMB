@@ -209,3 +209,139 @@ export interface ContrastCheckResult {
   large_text_aaa: boolean;
   recommendation: string;
 }
+
+// ==========================================
+// FUTURE SCOPE / PRODUCTION ROADMAP TYPES
+// ==========================================
+
+// 1. CMS Connectors & Pre-Publish Middleware
+export type CMSPlatform = 'wordpress' | 'contentful' | 'webflow' | 'notion' | 'hubspot' | 'strapi';
+
+export interface CMSConnector {
+  id: string;
+  name: string;
+  platform: CMSPlatform;
+  status: 'connected' | 'disconnected' | 'testing';
+  webhook_url: string;
+  api_key_masked: string;
+  auto_block_on_fail: boolean;
+  min_compliance_score: number;
+  last_sync_at?: string;
+  intercepted_count: number;
+  blocked_count: number;
+}
+
+export interface CMSSyncSimulation {
+  draft_title: string;
+  platform: CMSPlatform;
+  channel: ChannelType;
+  raw_content: string;
+  author: string;
+}
+
+export interface CMSInterceptResult {
+  allowed_to_publish: boolean;
+  compliance_score: number;
+  status: 'APPROVED_FOR_PUBLISH' | 'BLOCKED_BY_PLUMB';
+  reasons: string[];
+  findings_count: number;
+  timestamp: string;
+}
+
+// 2. Cross-Brand Governance & Policy Hierarchy
+export interface SubBrand {
+  id: string;
+  parent_org_id: string;
+  name: string;
+  slug: string;
+  industry: string;
+  voice_description: string;
+  tone_attributes: string[];
+  inherited_global_rules_count: number;
+  brand_specific_rules_count: number;
+  brand_color: string;
+  compliance_avg: number;
+  active: boolean;
+}
+
+// 3. Multilingual Brand Checks
+export type SupportedLanguage = 'en' | 'es' | 'fr' | 'de' | 'ja' | 'hi';
+
+export interface MultilingualRuleMapping {
+  language: SupportedLanguage;
+  language_name: string;
+  banned_term_translation: Record<string, string>;
+  required_disclaimer_translation: string;
+  localized_voice_tone: string;
+  market_locale: string;
+}
+
+// 4. Validation Gate & Benchmark Lab
+export interface BenchmarkTestResult {
+  sample_id: string;
+  type: string;
+  text: string;
+  expected_violations: number;
+  actual_violations: number;
+  passed: boolean;
+  latency_ms: number;
+  flagged_rules: string[];
+}
+
+export interface BenchmarkMetrics {
+  total_samples: number;
+  true_positives: number;
+  true_negatives: number;
+  false_positives: number;
+  false_negatives: number;
+  precision: number;
+  recall: number;
+  f1_score: number;
+  accuracy: number;
+  avg_latency_ms: number;
+  results: BenchmarkTestResult[];
+}
+
+export interface ReviewerDisagreementRecord {
+  id: string;
+  submission_title: string;
+  reviewer_name: string;
+  finding_excerpt: string;
+  rule_title: string;
+  ai_severity: SeverityType;
+  human_action: 'overridden_as_false_positive' | 'downgraded' | 'upgraded' | 'accepted_with_caution';
+  disagreement_reason: string;
+  created_at: string;
+}
+
+// 5. Cryptographic Immutability & Security Audit
+export interface CryptographicAuditVerification {
+  verified: boolean;
+  total_blocks_checked: number;
+  merkle_root_hash: string;
+  chain_integrity: 'valid' | 'corrupted';
+  last_verified_at: string;
+  tamper_detected: boolean;
+}
+
+export interface SecurityTestCase {
+  id: string;
+  name: string;
+  category: 'rbac_confidentiality' | 'rate_limiting' | 'token_tampering' | 'input_sanitization';
+  description: string;
+  status: 'passed' | 'failed';
+  details: string;
+  last_tested: string;
+}
+
+// 6. AI Diagnostics & Model Verification
+export interface AIDiagnosticStatus {
+  provider_active: 'gemini' | 'mock' | 'local_ollama';
+  gemini_api_configured: boolean;
+  model_name: string;
+  average_inference_latency_ms: number;
+  embedding_dimension: number;
+  top_k_grounding_retrieval: number;
+  last_health_check: string;
+  status: 'online' | 'degraded' | 'mock_fallback';
+}

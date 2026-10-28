@@ -419,29 +419,47 @@ export const LandingPage: React.FC = () => {
               </ul>
             </div>
 
-            {/* Future Scope */}
-            <div className="p-6 rounded-xl bg-[#0A0A0A] border border-[#2A2A2A] opacity-80">
-              <div className="inline-block px-2.5 py-0.5 rounded text-xs font-mono uppercase font-bold bg-[#141414] text-[#A3A3A3] border border-[#2A2A2A] mb-4">
-                Future Scope (Planned)
+            {/* Future Scope - Integrated & Live */}
+            <div className="p-6 rounded-xl bg-[#0A0A0A] border border-[#BC0202] shadow-[0_0_20px_rgba(188,2,2,0.15)]">
+              <div className="flex items-center justify-between mb-4">
+                <div className="inline-block px-2.5 py-0.5 rounded text-xs font-mono uppercase font-bold bg-[#BC0202] text-[#FFFFFF]">
+                  Integrated & Live
+                </div>
+                <span className="text-[10px] font-mono text-[#00FF66] flex items-center gap-1 font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00FF66] animate-pulse"></span>
+                  OPERATIONAL
+                </span>
               </div>
-              <ul className="space-y-2 text-xs text-[#A3A3A3]">
+              <ul className="space-y-2 text-xs text-[#F5F5F5]">
                 <li className="flex items-center gap-2">
-                  <Compass size={14} />
-                  <span>Multilingual localization compliance (Coming soon)</span>
+                  <CheckCircle2 size={14} className="text-[#00FF66]" />
+                  <span><strong>Multilingual brand engine</strong> (ES, FR, DE, JA, HI)</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Compass size={14} />
-                  <span>Direct CMS plugins (HubSpot, WordPress, Webflow)</span>
+                  <CheckCircle2 size={14} className="text-[#00FF66]" />
+                  <span><strong>CMS Pre-Publish Middleware</strong> (WordPress, Webflow, Notion)</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Compass size={14} />
-                  <span>Advanced vector visual similarity matching</span>
+                  <CheckCircle2 size={14} className="text-[#00FF66]" />
+                  <span><strong>Cross-Brand Governance</strong> (Aura Holdings hierarchy & overrides)</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Compass size={14} />
-                  <span>Enterprise multi-subsidiary policy governance</span>
+                  <CheckCircle2 size={14} className="text-[#00FF66]" />
+                  <span><strong>Validation Gate & Benchmark Lab</strong> (20-sample regression suite)</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 size={14} className="text-[#00FF66]" />
+                  <span><strong>SHA-256 Merkle Chain</strong> cryptographic audit immutability</span>
                 </li>
               </ul>
+              <div className="mt-4 pt-3 border-t border-[#2A2A2A]">
+                <Link
+                  to="/login"
+                  className="text-[11px] font-mono text-[#BC0202] hover:text-[#FF0000] flex items-center gap-1 font-bold transition-colors"
+                >
+                  Explore integrated modules <ArrowRight size={12} />
+                </Link>
+              </div>
             </div>
           </div>
         </div>

@@ -21,7 +21,8 @@ import {
   FileCheck2,
   Lock,
   Layers,
-  Info
+  Info,
+  Globe
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -32,7 +33,8 @@ import {
   Finding,
   CategoryType,
   SeverityType,
-  FindingStatus
+  FindingStatus,
+  SupportedLanguage
 } from '../types';
 import { SeverityBadge } from '../components/SeverityBadge';
 import { StatusBadge } from '../components/StatusBadge';
@@ -72,6 +74,11 @@ export const SubmissionStudioPage: React.FC = () => {
   // Dismiss Modal
   const [dismissFindingId, setDismissFindingId] = useState<string | null>(null);
   const [dismissReason, setDismissReason] = useState('');
+
+  // Multilingual State
+  const [selectedLang, setSelectedLang] = useState<SupportedLanguage>('en');
+  const [multilingualModal, setMultilingualModal] = useState<any>(null);
+  const [checkingLang, setCheckingLang] = useState(false);
 
   const findingsListRef = useRef<HTMLDivElement>(null);
 
@@ -243,6 +250,19 @@ export const SubmissionStudioPage: React.FC = () => {
     }
   };
 
+  const handleRunMultilingualCheck = async (lang: SupportedLanguage) => {
+    if (!activeVersion) return;
+    setCheckingLang(true);
+    try {
+      const res = await api.runMultilingualCheck(activeVersion.text_content, lang);
+      setMultilingualModal(res);
+    } catch (err: any) {
+      alert(err.message || 'Multilingual scan failed');
+    } finally {
+      setCheckingLang(false);
+    }
+  };
+
   const handleOpenDiff = async () => {
     if (!id || versions.length < 2) return;
     try {
@@ -351,6 +371,36 @@ export const SubmissionStudioPage: React.FC = () => {
 
         {/* Global Action Bar */}
         <div className="flex flex-wrap items-center gap-2 text-xs">
+          {/* Multilingual Selector & Check Button (PDF Slide 07 Scope) */}
+          <div className="flex items-center gap-1 bg-[#141414] p-1 rounded-lg border border-[#2A2A2A]">
+            <Globe size={13} className="text-[#BC0202] ml-1.5" />
+            <select
+              value={selectedLang}
+              onChange={(e) => {
+                const l = e.target.value as SupportedLanguage;
+                setSelectedLang(l);
+                handleRunMultilingualCheck(l);
+              }}
+              className="bg-transparent text-[#F5F5F5] text-xs font-mono focus:outline-none cursor-pointer pr-1"
+              title="Multilingual Brand Check Locale"
+            >
+              <option value="en" className="bg-[#0A0A0A]">EN (US/Global)</option>
+              <option value="es" className="bg-[#0A0A0A]">ES (Español)</option>
+              <option value="fr" className="bg-[#0A0A0A]">FR (Français)</option>
+              <option value="de" className="bg-[#0A0A0A]">DE (Deutsch)</option>
+              <option value="ja" className="bg-[#0A0A0A]">JA (日本語)</option>
+              <option value="hi" className="bg-[#0A0A0A]">HI (हिन्दी)</option>
+            </select>
+            <button
+              type="button"
+              onClick={() => handleRunMultilingualCheck(selectedLang)}
+              disabled={checkingLang}
+              className="px-2 py-1 rounded bg-[#000000] hover:bg-[#830000]/40 text-[11px] text-[#A3A3A3] hover:text-[#F5F5F5] transition-colors font-mono"
+            >
+              {checkingLang ? 'Scanning...' : 'Scan'}
+            </button>
+          </div>
+
           {versions.length > 1 && (
             <button
               onClick={handleOpenDiff}
@@ -774,6 +824,68 @@ export const SubmissionStudioPage: React.FC = () => {
                 className="px-4 py-2 rounded bg-[#BC0202] hover:bg-[#FF0000] text-[#FFFFFF] font-semibold disabled:opacity-50"
               >
                 Confirm Dismissal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Modal: Multilingual Scan Results (PDF Slide 07 Scope) */}
+      {multilingualModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000]/80 p-4 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-[#0A0A0A] border border-[#BC0202] rounded-xl max-w-lg w-full p-6 space-y-4 text-xs glow-card shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#2A2A2A] pb-3">
+              <div className="flex items-center gap-2">
+                <Globe size={18} className="text-[#FF0000]" />
+                <h3 className="text-base font-bold text-[#F5F5F5]">
+                  Multilingual Compliance Audit ({multilingualModal.language_name})
+                </h3>
+              </div>
+              <button
+                onClick={() => setMultilingualModal(null)}
+                className="text-[#A3A3A3] hover:text-[#F5F5F5]"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="p-3 rounded-lg bg-[#141414] border border-[#2A2A2A] flex items-center justify-between font-mono text-xs">
+              <span>Jurisdiction Score: <strong className="text-emerald-400">{multilingualModal.compliance_score}%</strong></span>
+              <span>Violations: <strong className={multilingualModal.violations_found > 0 ? 'text-[#FF0000]' : 'text-emerald-400'}>{multilingualModal.violations_found}</strong></span>
+              <span>Local Disclaimer: <strong className={multilingualModal.disclaimer_present ? 'text-emerald-400' : 'text-[#FF0000]'}>{multilingualModal.disclaimer_present ? 'Active' : 'Missing'}</strong></span>
+            </div>
+
+            {multilingualModal.findings.length > 0 ? (
+              <div className="space-y-2">
+                <span className="block text-[11px] font-mono uppercase text-[#A3A3A3]">Localized Prohibitions & Deficiencies:</span>
+                {multilingualModal.findings.map((f: any, idx: number) => (
+                  <div key={idx} className="p-3 rounded bg-[#141414] border border-[#830000] space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-[#FF0000] font-mono">Flagged: "{f.term}"</span>
+                      <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-[#830000]/40 text-[#F5F5F5]">
+                        {f.severity}
+                      </span>
+                    </div>
+                    <p className="text-[#A3A3A3] text-xs">{f.explanation}</p>
+                    {f.suggested && (
+                      <div className="text-xs text-emerald-400 font-mono pt-1">
+                        Recommended: "{f.suggested}"
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-4 rounded bg-emerald-950/40 border border-emerald-800 text-emerald-300 text-xs">
+                Zero localized brand violations found for {multilingualModal.language_name}.
+              </div>
+            )}
+
+            <div className="flex justify-end pt-2 border-t border-[#2A2A2A]">
+              <button
+                onClick={() => setMultilingualModal(null)}
+                className="px-4 py-2 rounded bg-[#141414] hover:bg-[#2A2A2A] text-[#F5F5F5] text-xs font-semibold"
+              >
+                Close Audit
               </button>
             </div>
           </div>

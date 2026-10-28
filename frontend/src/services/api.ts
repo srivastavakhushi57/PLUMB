@@ -13,7 +13,18 @@ import {
   AnalyticsData,
   ContrastCheckResult,
   RoleType,
-  FindingStatus
+  FindingStatus,
+  CMSConnector,
+  CMSSyncSimulation,
+  CMSInterceptResult,
+  SubBrand,
+  MultilingualRuleMapping,
+  SupportedLanguage,
+  BenchmarkMetrics,
+  ReviewerDisagreementRecord,
+  CryptographicAuditVerification,
+  SecurityTestCase,
+  AIDiagnosticStatus
 } from '../types';
 import { demoStore } from './demoStore';
 
@@ -507,6 +518,197 @@ export const api = {
         body: formData,
       },
       () => demoStore.analyzeImage(file)
+    );
+  },
+
+  // ==========================================
+  // 1. CMS Connectors & Pre-Publish Middleware
+  // ==========================================
+  async getCMSConnectors(): Promise<CMSConnector[]> {
+    return tryFetch(
+      `${API_BASE}/integrations/cms`,
+      { headers: getAuthHeader() },
+      () => demoStore.getCMSConnectors()
+    );
+  },
+
+  async updateCMSConnector(id: string, updates: Partial<CMSConnector>): Promise<CMSConnector> {
+    return tryFetch(
+      `${API_BASE}/integrations/cms/${id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+        },
+        body: JSON.stringify(updates),
+      },
+      () => demoStore.updateCMSConnector(id, updates)
+    );
+  },
+
+  async simulateCMSIntercept(sim: CMSSyncSimulation): Promise<CMSInterceptResult> {
+    return tryFetch(
+      `${API_BASE}/integrations/cms/simulate`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+        },
+        body: JSON.stringify(sim),
+      },
+      () => demoStore.simulateCMSIntercept(sim)
+    );
+  },
+
+  // ==========================================
+  // 2. Cross-Brand Governance & Policy Hierarchy
+  // ==========================================
+  async getSubBrands(): Promise<SubBrand[]> {
+    return tryFetch(
+      `${API_BASE}/brands/sub-brands`,
+      { headers: getAuthHeader() },
+      () => demoStore.getSubBrands()
+    );
+  },
+
+  async getActiveBrand(): Promise<SubBrand> {
+    return tryFetch(
+      `${API_BASE}/brands/active`,
+      { headers: getAuthHeader() },
+      () => demoStore.getActiveBrand()
+    );
+  },
+
+  async switchSubBrand(id: string): Promise<SubBrand> {
+    return tryFetch(
+      `${API_BASE}/brands/switch/${id}`,
+      {
+        method: 'POST',
+        headers: getAuthHeader(),
+      },
+      () => demoStore.switchSubBrand(id)
+    );
+  },
+
+  async createSubBrand(data: Partial<SubBrand>): Promise<SubBrand> {
+    return tryFetch(
+      `${API_BASE}/brands/sub-brands`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+        },
+        body: JSON.stringify(data),
+      },
+      () => demoStore.createSubBrand(data)
+    );
+  },
+
+  // ==========================================
+  // 3. Multilingual Brand Checks
+  // ==========================================
+  async getMultilingualMappings(): Promise<MultilingualRuleMapping[]> {
+    return tryFetch(
+      `${API_BASE}/multilingual/mappings`,
+      { headers: getAuthHeader() },
+      () => demoStore.getMultilingualMappings()
+    );
+  },
+
+  async runMultilingualCheck(text: string, language: SupportedLanguage): Promise<any> {
+    return tryFetch(
+      `${API_BASE}/multilingual/check`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+        },
+        body: JSON.stringify({ text, language }),
+      },
+      () => demoStore.runMultilingualCheck(text, language)
+    );
+  },
+
+  // ==========================================
+  // 4. Validation Gate & Benchmark Lab
+  // ==========================================
+  async runBenchmarkSuite(): Promise<BenchmarkMetrics> {
+    return tryFetch(
+      `${API_BASE}/validation/benchmark`,
+      { headers: getAuthHeader() },
+      () => demoStore.runBenchmarkSuite()
+    );
+  },
+
+  async getReviewerDisagreements(): Promise<ReviewerDisagreementRecord[]> {
+    return tryFetch(
+      `${API_BASE}/validation/disagreements`,
+      { headers: getAuthHeader() },
+      () => demoStore.getReviewerDisagreements()
+    );
+  },
+
+  async recordReviewerDisagreement(rec: Partial<ReviewerDisagreementRecord>): Promise<any> {
+    return tryFetch(
+      `${API_BASE}/validation/disagreements`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+        },
+        body: JSON.stringify(rec),
+      },
+      () => demoStore.recordReviewerDisagreement(rec)
+    );
+  },
+
+  // ==========================================
+  // 5. Cryptographic Immutability & Security Audit
+  // ==========================================
+  async verifyAuditImmutability(): Promise<CryptographicAuditVerification> {
+    return tryFetch(
+      `${API_BASE}/audit/verify-immutability`,
+      { headers: getAuthHeader() },
+      () => demoStore.verifyAuditImmutability()
+    );
+  },
+
+  async runSecuritySuite(): Promise<SecurityTestCase[]> {
+    return tryFetch(
+      `${API_BASE}/audit/security-suite`,
+      { headers: getAuthHeader() },
+      () => demoStore.runSecuritySuite()
+    );
+  },
+
+  // ==========================================
+  // 6. AI Diagnostics & Model Verification
+  // ==========================================
+  async getAIDiagnostics(): Promise<AIDiagnosticStatus> {
+    return tryFetch(
+      `${API_BASE}/ai/diagnostics`,
+      { headers: getAuthHeader() },
+      () => demoStore.getAIDiagnostics()
+    );
+  },
+
+  async testAIConnection(provider?: string): Promise<any> {
+    return tryFetch(
+      `${API_BASE}/ai/test-connection`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+        },
+        body: JSON.stringify({ provider }),
+      },
+      () => demoStore.testAIConnection(provider)
     );
   },
 };

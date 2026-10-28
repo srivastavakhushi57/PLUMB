@@ -10,7 +10,9 @@ import {
   LogOut,
   UserCheck,
   Building2,
-  Lock
+  Lock,
+  Webhook,
+  Target
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { ShieldLogo } from './ShieldLogo';
@@ -178,6 +180,44 @@ export const Navbar: React.FC = () => {
               <span>Analytics</span>
             </Link>
           )}
+
+          {role === 'admin' && (
+            <Link
+              to="/app/cross-brand"
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                isActive('/app/cross-brand')
+                  ? 'bg-[#141414] text-[#FF0000] border-b-2 border-[#BC0202]'
+                  : 'text-[#A3A3A3] hover:text-[#F5F5F5] hover:bg-[#141414]'
+              }`}
+            >
+              <Building2 size={15} />
+              <span>Cross-Brand</span>
+            </Link>
+          )}
+
+          <Link
+            to="/app/integrations"
+            className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+              isActive('/app/integrations')
+                ? 'bg-[#141414] text-[#FF0000] border-b-2 border-[#BC0202]'
+                : 'text-[#A3A3A3] hover:text-[#F5F5F5] hover:bg-[#141414]'
+            }`}
+          >
+            <Webhook size={15} />
+            <span>CMS Integrations</span>
+          </Link>
+
+          <Link
+            to="/app/validation"
+            className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+              isActive('/app/validation')
+                ? 'bg-[#141414] text-[#FF0000] border-b-2 border-[#BC0202]'
+                : 'text-[#A3A3A3] hover:text-[#F5F5F5] hover:bg-[#141414]'
+            }`}
+          >
+            <Target size={15} />
+            <span>Validation Lab</span>
+          </Link>
 
           {role === 'admin' && (
             <Link

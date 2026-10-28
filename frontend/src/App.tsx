@@ -13,6 +13,9 @@ import { GuidelinesPage } from './pages/GuidelinesPage';
 import { VisualStudioPage } from './pages/VisualStudioPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { AuditLogPage } from './pages/AuditLogPage';
+import { CMSIntegrationsPage } from './pages/CMSIntegrationsPage';
+import { CrossBrandPage } from './pages/CrossBrandPage';
+import { ValidationLabPage } from './pages/ValidationLabPage';
 
 const queryClient = new QueryClient();
 
@@ -65,6 +68,9 @@ export function App() {
               <Route path="visual" element={<VisualStudioPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
               <Route path="audit" element={<AuditLogPage />} />
+              <Route path="cross-brand" element={<CrossBrandPage />} />
+              <Route path="integrations" element={<CMSIntegrationsPage />} />
+              <Route path="validation" element={<ValidationLabPage />} />
             </Route>
 
             {/* Catch-all redirect */}
